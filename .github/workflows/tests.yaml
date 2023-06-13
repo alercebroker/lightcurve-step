@@ -24,6 +24,6 @@ jobs:
       python-version: "3.9"
       sources-folder: "lightcurve_step"
       test-folder: "tests/integration"
-      test-dependencies: "pytest pytest-docker"
+      test-dependencies: "pytest pytest-docker pytest-cov"
       codecov-flags: "" # Do not upload
       test-command: "python -m pytest -x tests/integration"

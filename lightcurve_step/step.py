@@ -37,8 +37,7 @@ class LightcurveStep(GenericStep):
                 {"$match": {"aid": {"$in": list(messages["aids"])}}},
                 {
                     "$addFields": {
-                        "candid": {"$toString": "$_id"},
-                        "parent_candid": {"$toString": "$parent_candid"},
+                        "candid": "$_id",
                         "forced": False,
                         "new": False,
                     }
@@ -55,8 +54,7 @@ class LightcurveStep(GenericStep):
                 {"$match": {"aid": {"$in": list(messages["aids"])}}},
                 {
                     "$addFields": {
-                        "candid": {"$toString": "$_id"},
-                        "parent_candid": {"$toString": "$parent_candid"},
+                        "candid": "$_id",
                         "forced": True,
                         "new": False,
                     }
@@ -76,6 +74,8 @@ class LightcurveStep(GenericStep):
         detections = detections.sort_values(
             ["has_stamp", "new"], ascending=[False, True]
         ).drop_duplicates("candid", keep="first")
+        detections["candid"] = str(detections["candid"])
+        detections["parent_candid"] = str(detections["parent_candid"])
         non_detections = non_detections.drop_duplicates(["aid", "fid", "mjd"])
 
         return {

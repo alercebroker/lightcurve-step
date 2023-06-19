@@ -42,7 +42,7 @@ class LightcurveStep(GenericStep):
                         "new": False,
                     }
                 },
-                {"$project": {"_id": False}},
+                {"$project": {"_id": False, "evilDocDbHack": False}},
             ]
         )
         db_non_detections = query_non_detections.collection.find(
@@ -59,7 +59,7 @@ class LightcurveStep(GenericStep):
                         "new": False,
                     }
                 },
-                {"$project": {"_id": False}},
+                {"$project": {"_id": False, "evilDocDbHack": False}},
             ]
         )
 

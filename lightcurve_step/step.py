@@ -46,7 +46,8 @@ class LightcurveStep(GenericStep):
             ]
         )
         db_non_detections = query_non_detections.collection.find(
-            {"aid": {"$in": list(messages["aids"])}}, {"_id": False, "evilDocDbHack": False}
+            {"aid": {"$in": list(messages["aids"])}},
+            {"_id": False, "evilDocDbHack": False},
         )
 
         db_forced_photometries = query_forced_photometries.collection.aggregate(

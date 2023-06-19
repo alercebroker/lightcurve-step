@@ -2,6 +2,7 @@ import os
 import logging
 
 from prometheus_client import start_http_server
+from apf.metrics.prometheus import PrometheusMetrics
 
 from db_plugins.db.mongo.connection import MongoConnection
 
@@ -22,13 +23,15 @@ def step_creator():
     settings = settings_creator()
 
     level = logging.INFO
-    if os.getenv('LOGGING_DEBUG'):
+    if os.getenv("LOGGING_DEBUG"):
         level = logging.DEBUG
 
     logger = logging.getLogger("alerce")
     logger.setLevel(level)
 
-    fmt = logging.Formatter("%(asctime)s %(levelname)7s %(name)36s: %(message)s", "%Y-%m-%d %H:%M:%S")
+    fmt = logging.Formatter(
+        "%(asctime)s %(levelname)7s %(name)36s: %(message)s", "%Y-%m-%d %H:%M:%S"
+    )
     handler = logging.StreamHandler()
     handler.setFormatter(fmt)
     handler.setLevel(level)
@@ -36,10 +39,15 @@ def step_creator():
     logger.addHandler(handler)
 
     if settings["PROMETHEUS"]:
+        prometheus_metrics = PrometheusMetrics()
         start_http_server(8000)
 
     db = MongoConnection()
-    return LightcurveStep(config=settings, db_client=db)
+    return LightcurveStep(
+        config=settings,
+        db_client=db,
+        prometheus_metrics=prometheus_metrics,
+    )
 
 
 if __name__ == "__main__":

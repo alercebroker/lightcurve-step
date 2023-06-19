@@ -8,8 +8,8 @@ from db_plugins.db.mongo.models import Detection, NonDetection, ForcedPhotometry
 
 
 class LightcurveStep(GenericStep):
-    def __init__(self, config: dict, db_client: MongoConnection):
-        super().__init__(config=config)
+    def __init__(self, config: dict, db_client: MongoConnection, **kwargs):
+        super().__init__(config=config, **kwargs)
         self.db_client = db_client
         self.db_client.connect(config["DB_CONFIG"])
 

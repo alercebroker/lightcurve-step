@@ -37,8 +37,7 @@ class LightcurveStep(GenericStep):
                 {"$match": {"aid": {"$in": list(messages["aids"])}}},
                 {
                     "$addFields": {
-                        "candid": {"$toString": "$_id"},
-                        "parent_candid": {"$toString": "$parent_candid"},
+                        "candid": "$_id",
                         "forced": False,
                         "new": False,
                     }
@@ -55,8 +54,7 @@ class LightcurveStep(GenericStep):
                 {"$match": {"aid": {"$in": list(messages["aids"])}}},
                 {
                     "$addFields": {
-                        "candid": {"$toString": "$_id"},
-                        "parent_candid": {"$toString": "$parent_candid"},
+                        "candid": "$_id",
                         "forced": True,
                         "new": False,
                     }
@@ -73,6 +71,9 @@ class LightcurveStep(GenericStep):
         )
 
         # Try to keep those with stamp coming from the DB if there are clashes
+        detections["candid"] = detections["candid"].astype(str)
+        detections["parent_candid"] = detections["parent_candid"].astype(str)
+
         detections = detections.sort_values(
             ["has_stamp", "new"], ascending=[False, True]
         ).drop_duplicates("candid", keep="first")

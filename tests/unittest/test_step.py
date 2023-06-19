@@ -53,18 +53,18 @@ def test_execute_removes_duplicates_keeping_ones_with_stamps():
     step = LightcurveStep()
     step.db_client = mock_client
     mock_client.query.return_value.collection.aggregate.return_value = [
-        {"candid": "d", "has_stamp": True, "sid": "SURVEY", "fid": "g", "new": False},
-        {"candid": "a", "has_stamp": True, "sid": "SURVEY", "fid": "g", "new": False},
+        {"candid": "d", "parent_candid": "p_d", "has_stamp": True, "sid": "SURVEY", "fid": "g", "new": False},
+        {"candid": 97923792234, "parent_candid": "p_a", "has_stamp": True, "sid": "SURVEY", "fid": "g", "new": False},
     ]
     mock_client.query.return_value.collection.find.return_value = []
 
     message = {
         "aids": {"aid1", "aid2"},
         "detections": [
-            {"candid": "a", "has_stamp": True, "sid": "SURVEY", "fid": "g", "new": True},
-            {"candid": "b", "has_stamp": False, "sid": "SURVEY", "fid": "g", "new": True},
-            {"candid": "c", "has_stamp": True, "sid": "SURVEY", "fid": "g", "new": True},
-            {"candid": "d", "has_stamp": False, "sid": "SURVEY", "fid": "g", "new": True},
+            {"candid": 97923792234, "parent_candid": "p_a", "has_stamp": True, "sid": "SURVEY", "fid": "g", "new": True},
+            {"candid": "b", "parent_candid": "p_b", "has_stamp": False, "sid": "SURVEY", "fid": "g", "new": True},
+            {"candid": "c", "parent_candid": "p_c", "has_stamp": True, "sid": "SURVEY", "fid": "g", "new": True},
+            {"candid": "d", "parent_candid": "p_d", "has_stamp": False, "sid": "SURVEY", "fid": "g", "new": True},
         ],
         "non_detections": [
             {"mjd": 1, "aid": "a", "fid": "g", "sid": "SURVEY", "tid": "SURVEY1"},
@@ -77,10 +77,10 @@ def test_execute_removes_duplicates_keeping_ones_with_stamps():
 
     expected = {
         "detections": [
-            {"candid": "a", "has_stamp": True, "sid": "SURVEY", "fid": "g", "new": False},
-            {"candid": "c", "has_stamp": True, "sid": "SURVEY", "fid": "g", "new": True},
-            {"candid": "b", "has_stamp": False, "sid": "SURVEY", "fid": "g", "new": True},
-            {"candid": "d", "has_stamp": True, "sid": "SURVEY", "fid": "g", "new": False},
+            {"candid": "97923792234", "parent_candid": "p_a", "has_stamp": True, "sid": "SURVEY", "fid": "g", "new": False},
+            {"candid": "c", "parent_candid": "p_c", "has_stamp": True, "sid": "SURVEY", "fid": "g", "new": True},
+            {"candid": "b", "parent_candid": "p_b", "has_stamp": False, "sid": "SURVEY", "fid": "g", "new": True},
+            {"candid": "d", "parent_candid": "p_d", "has_stamp": True, "sid": "SURVEY", "fid": "g", "new": False},
         ],
         "non_detections": [
             {"mjd": 1, "aid": "a", "fid": "g", "sid": "SURVEY", "tid": "SURVEY1"},

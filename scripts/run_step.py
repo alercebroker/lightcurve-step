@@ -37,18 +37,18 @@ def step_creator():
     handler.setLevel(level)
 
     logger.addHandler(handler)
-    prometheus_metrics = None
+    db = MongoConnection()
+    
+    step_params = {
+        "config": settings,
+        "db_client": db,
+    }
 
     if settings["PROMETHEUS"]:
-        prometheus_metrics = PrometheusMetrics()
+        step_params["prometheus_metrics"] = PrometheusMetrics()
         start_http_server(8000)
 
-    db = MongoConnection()
-    return LightcurveStep(
-        config=settings,
-        db_client=db,
-        prometheus_metrics=prometheus_metrics,
-    )
+    return LightcurveStep(**step_params)
 
 
 if __name__ == "__main__":

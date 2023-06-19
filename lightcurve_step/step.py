@@ -38,7 +38,6 @@ class LightcurveStep(GenericStep):
                 {
                     "$addFields": {
                         "candid": "$_id",
-                        "parent_candid": "$parent_candid",
                         "forced": False,
                         "new": False,
                     }
@@ -56,7 +55,6 @@ class LightcurveStep(GenericStep):
                 {
                     "$addFields": {
                         "candid": "$_id",
-                        "parent_candid": "$parent_candid",
                         "forced": True,
                         "new": False,
                     }

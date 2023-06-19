@@ -37,6 +37,7 @@ def step_creator():
     handler.setLevel(level)
 
     logger.addHandler(handler)
+    prometheus_metrics = None
 
     if settings["PROMETHEUS"]:
         prometheus_metrics = PrometheusMetrics()

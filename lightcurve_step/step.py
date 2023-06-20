@@ -84,7 +84,9 @@ class LightcurveStep(GenericStep):
             ["has_stamp", "new"], ascending=[False, True]
         ).drop_duplicates("candid", keep="first")
         non_detections = non_detections.drop_duplicates(["aid", "fid", "mjd"])
-        self.logger.debug(f"Obtained {len(detections[detections['new']])} new detections")
+        self.logger.debug(
+            f"Obtained {len(detections[detections['new']])} new detections"
+        )
 
         return {
             "detections": detections,

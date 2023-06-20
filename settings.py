@@ -10,7 +10,7 @@ from credentials import get_mongodb_credentials
 
 def settings_creator():
     # Set the global logging level to debug
-    logging_debug = False
+    logging_debug = bool(os.getenv("LOGGING_DEBUG"))
 
     db_config = get_mongodb_credentials(os.environ["MONGODB_SECRET_NAME"])
 

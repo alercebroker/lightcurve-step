@@ -1,7 +1,8 @@
-from typing import List
-
+import logging
 import numpy as np
 import pandas as pd
+
+from typing import List
 from apf.core.step import GenericStep
 from db_plugins.db.mongo import MongoConnection
 from db_plugins.db.mongo.models import Detection, NonDetection, ForcedPhotometry
@@ -12,6 +13,7 @@ class LightcurveStep(GenericStep):
         super().__init__(config=config, **kwargs)
         self.db_client = db_client
         self.db_client.connect(config["DB_CONFIG"])
+        self.logger = logging.getLogger("alerce.LightcurveStep")
 
     @classmethod
     def pre_execute(cls, messages: List[dict]) -> dict:
@@ -20,6 +22,8 @@ class LightcurveStep(GenericStep):
             aids.add(msg["aid"])
             detections.extend([det | {"new": True} for det in msg["detections"]])
             non_detections.extend(msg["non_detections"])
+        logger = logging.getLogger("alerce.LightcurveStep")
+        logger.debug(f"Received {len(detections)} detections from messages")
         return {
             "aids": aids,
             "detections": detections,
@@ -70,15 +74,19 @@ class LightcurveStep(GenericStep):
         non_detections = pd.DataFrame(
             messages["non_detections"] + list(db_non_detections)
         )
-
-        # Try to keep those with stamp coming from the DB if there are clashes
+        self.logger.debug(f"Retrieved {detections.shape[0]} detections")
         detections["candid"] = detections["candid"].astype(str)
         detections["parent_candid"] = detections["parent_candid"].astype(str)
 
+        # Try to keep those with stamp coming from the DB if there are clashes
+        # maybe drop duplicates with candid and AID in LSST/ELAsTiCC
         detections = detections.sort_values(
             ["has_stamp", "new"], ascending=[False, True]
         ).drop_duplicates("candid", keep="first")
         non_detections = non_detections.drop_duplicates(["aid", "fid", "mjd"])
+        self.logger.debug(
+            f"Obtained {len(detections[detections['new']])} new detections"
+        )
 
         return {
             "detections": detections,

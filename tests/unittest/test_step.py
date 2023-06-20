@@ -52,6 +52,7 @@ def test_execute_removes_duplicates_keeping_ones_with_stamps():
     LightcurveStep.__init__ = lambda self: None
     step = LightcurveStep()
     step.db_client = mock_client
+    step.logger = mock.MagicMock()
     mock_client.query.return_value.collection.aggregate.return_value = [
         {"candid": "d", "parent_candid": "p_d", "has_stamp": True, "sid": "SURVEY", "fid": "g", "new": False},
         {"candid": 97923792234, "parent_candid": "p_a", "has_stamp": True, "sid": "SURVEY", "fid": "g", "new": False},

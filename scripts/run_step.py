@@ -48,6 +48,10 @@ def step_creator():
         step_params["prometheus_metrics"] = PrometheusMetrics()
         start_http_server(8000)
 
+    if settings["USE_PROFILING"]:
+        from pyroscope import configure
+        configure(application_name="step.Lightcurve", server_address=settings["PYROSCOPE_SERVER"])
+
     return LightcurveStep(**step_params)
 
 
